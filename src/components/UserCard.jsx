@@ -1,4 +1,10 @@
 import { IconSquareX } from "@tabler/icons-react";
+import {
+  VALIDATION_FIRST_NAME,
+  VALIDATION_GMAIL,
+  VALIDATION_LAST_NAME,
+  VALIDATION_PASSWORD,
+} from "../constants/formValidations";
 
 const UserCard = ({
   isShowModal,
@@ -6,6 +12,8 @@ const UserCard = ({
   handleSubmit,
   register,
   submit,
+  idUsersToEdit,
+  errors,
 }) => {
   return (
     <section
@@ -15,9 +23,11 @@ const UserCard = ({
     >
       <form
         onSubmit={handleSubmit(submit)}
-        className="bg-white p-3 rounded-md grid gap-3 w-[min(100%,_270px)]   relative"
+        className="bg-white p-5 rounded-md grid gap-3 w-[min(100%,_270px)]   relative"
       >
-        <h2 className="text-center text-lg font-semibold">add user</h2>
+        <h2 className="text-center text-lg font-semibold">
+          {idUsersToEdit ? "update user" : "add user"}
+        </h2>
         <button
           onClick={handelCloseModal}
           type="button"
@@ -33,8 +43,14 @@ const UserCard = ({
             className="outline-none border px-2 py-1 rounded-sm"
             id="name"
             type="text"
-            {...register("first_name")}
+            autoComplete="off"
+            {...register("first_name", VALIDATION_FIRST_NAME)}
           />
+          {errors.first_name && (
+            <span className="text-xs text-red-500">
+              {errors.first_name.message}
+            </span>
+          )}
         </div>
         <div className="grid gap-1 ">
           <label className="font-light" htmlFor="last_name">
@@ -44,8 +60,14 @@ const UserCard = ({
             className="outline-none border px-2 py-1 rounded-sm"
             id="last_name"
             type="text"
-            {...register("last_name")}
+            autoComplete="off"
+            {...register("last_name", VALIDATION_LAST_NAME)}
           />
+          {errors.last_name && (
+            <span className="text-xs text-red-500">
+              {errors.last_name.message}
+            </span>
+          )}
         </div>
         <div className="grid gap-1 ">
           <label className="font-light" htmlFor="email">
@@ -55,8 +77,12 @@ const UserCard = ({
             className="outline-none border px-2 py-1 rounded-sm"
             id="email"
             type="text"
-            {...register("email")}
+            autoComplete="off"
+            {...register("email", VALIDATION_GMAIL)}
           />
+          {errors.email && (
+            <span className="text-xs text-red-500">{errors.email.message}</span>
+          )}
         </div>
         <div className="grid gap-1 ">
           <label className="font-light" htmlFor="password">
@@ -66,8 +92,14 @@ const UserCard = ({
             className="outline-none border px-2 py-1 rounded-sm"
             id="password"
             type="text"
-            {...register("password")}
+            autoComplete="off"
+            {...register("password", VALIDATION_PASSWORD)}
           />
+          {errors.password && (
+            <span className="text-xs text-red-500">
+              {errors.password.message}
+            </span>
+          )}
         </div>
         <div className="grid gap-1 ">
           <label className="font-light" htmlFor="birthday">
@@ -77,6 +109,7 @@ const UserCard = ({
             className="outline-none border px-2 py-1 rounded-sm"
             id="birthday"
             type="date"
+            autoComplete="off"
             {...register("birthday")}
           />
         </div>
@@ -84,7 +117,7 @@ const UserCard = ({
           className="bg-blue-500 text-white p-2 px-4 uppercase font-semibold rounded-s-sm"
           type="submit"
         >
-          add
+          {idUsersToEdit ? "save Changes" : "add"}
         </button>
       </form>
     </section>

@@ -11,11 +11,21 @@ import UsersList from "./components/UsersList";
 function App() {
   const [isShowModal, setIsShowModal] = useState(false);
   const [users, setUsers] = useState([]);
+  const [idUsersToEdit, setIdUsersToEdit] = useState(null);
 
-  const { handleSubmit, register, reset } = useForm();
+  const {
+    handleSubmit,
+    register,
+    reset,
+    formState: { errors },
+  } = useForm();
 
   const submit = (data) => {
-    createUser(data);
+    if (idUsersToEdit) {
+      updateUsers(data);
+    } else {
+      createUser(data);
+    }
   };
 
   const handelOpenModal = () => {
@@ -24,6 +34,8 @@ function App() {
 
   const handelCloseModal = () => {
     setIsShowModal(false);
+    reset(EMPTY_FORM_VALUES);
+    setIdUsersToEdit(null);
   };
 
   const createUser = (data) => {
@@ -31,7 +43,6 @@ function App() {
       .post(BASE_URL + "/users/", data)
       .then(() => {
         setIsShowModal(false);
-        reset(EMPTY_FORM_VALUES);
         getAllUsers();
       })
       .catch((err) => console.log(err));
@@ -41,6 +52,16 @@ function App() {
     axios
       .delete(BASE_URL + `/users/${id}/`)
       .then(() => getAllUsers())
+      .catch((err) => console.log(err));
+  };
+
+  const updateUsers = (data) => {
+    axios
+      .put(BASE_URL + `/users/${idUsersToEdit}/`, data)
+      .then(() => {
+        getAllUsers();
+        handelCloseModal();
+      })
       .catch((err) => console.log(err));
   };
 
@@ -54,6 +75,7 @@ function App() {
   const handleClickUpdate = (userUpdate) => {
     handelOpenModal();
     reset(userUpdate);
+    setIdUsersToEdit(userUpdate.id);
   };
 
   useEffect(() => {
@@ -69,6 +91,8 @@ function App() {
         handleSubmit={handleSubmit}
         register={register}
         submit={submit}
+        idUsersToEdit={idUsersToEdit}
+        errors={errors}
       />
       <UsersList
         users={users}
